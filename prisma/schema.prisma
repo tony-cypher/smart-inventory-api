@@ -1,0 +1,136 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String @id @default(uuid())
+  name     String
+  email    String @unique
+  password String
+  role     Role   @default(STORE_OWNER)
+
+  // The store this user works at (optional, many users can work at one store)
+  store   Store?  @relation("UserStore", fields: [storeId], references: [id])
+  storeId String?
+
+  ownedStore Store? @relation("StoreOwner")
+
+  createdAt DateTime @default(now())
+  updateAt  DateTime @updatedAt
+}
+
+model Store {
+  id       String  @id @default(uuid())
+  name     String
+  location String?
+
+  // One-to-one owner (must be unique!)
+  owner   User?   @relation("StoreOwner", fields: [ownerId], references: [id])
+  ownerId String? @unique
+
+  // Many users can belong to one store
+  users User[] @relation("UserStore")
+
+  products      Product[]
+  stockLogs     StockLog[]
+  orders        Order[]
+  notifications Notification[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Product {
+  id           String  @id @default(uuid())
+  name         String
+  description  String?
+  sku          String  @unique
+  price        Float
+  reorderLevel Int // If quantity < reorderLevel, trigger reorder
+  quantity     Int
+  store        Store   @relation(fields: [storeId], references: [id])
+  storeId      String
+
+  stokeLogs StockLog[]
+  orders    OrderItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model StockLog {
+  id        String    @id @default(uuid())
+  product   Product   @relation(fields: [productId], references: [id])
+  productId String
+  store     Store     @relation(fields: [storeId], references: [id])
+  storeId   String
+  type      StockType
+  quantity  Int
+  note      String?
+  createdAt DateTime  @default(now())
+}
+
+model Order {
+  id        String      @id @default(uuid())
+  store     Store       @relation(fields: [storeId], references: [id])
+  storeId   String
+  status    OrderStatus @default(PENDING)
+  total     Float
+  items     OrderItem[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+model OrderItem {
+  id        String  @id @default(uuid())
+  order     Order   @relation(fields: [orderId], references: [id])
+  orderId   String
+  product   Product @relation(fields: [productId], references: [id])
+  productId String
+  quantity  String
+  price     Float
+}
+
+model Notification {
+  id        String           @id @default(uuid())
+  store     Store            @relation(fields: [storeId], references: [id])
+  storeId   String
+  message   String
+  read      Boolean          @default(false)
+  type      NotificationType
+  createdAt DateTime         @default(now())
+}
+
+enum Role {
+  ADMIN
+  STORE_OWNER
+}
+
+enum StockType {
+  ADD
+  REMOVE
+  ADJUST
+}
+
+enum OrderStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+}
+
+enum NotificationType {
+  LOW_STOCK
+  NEW_ORDER
+  STOCK_UPDATED
+}
