@@ -1,8 +1,10 @@
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
+import swaggerUi from "swagger-ui-express";
 import { errorHandler } from "./middlewares/error.middleware";
 import authRoutes from "./routes/auth.routes";
+import { swaggerSpec } from "./lib/swagger";
 
 const app = express();
 
@@ -20,5 +22,7 @@ app.get("/api/test", (req, res) => {
 app.use("/api/auth", authRoutes);
 
 app.use(errorHandler);
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 export default app;
