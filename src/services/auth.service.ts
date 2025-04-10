@@ -51,3 +51,17 @@ export const loginService = async (email: string, password: string) => {
     token,
   };
 };
+
+export const getCurrentUserService = async (userId: string) => {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { id: true, email: true, role: true, createdAt: true },
+  });
+
+  if (!user) throw new Error("User not found");
+  return user;
+};
+
+export const logoutService = () => {
+  return { message: "Logged out successfully" };
+};
