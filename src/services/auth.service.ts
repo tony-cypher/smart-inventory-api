@@ -1,6 +1,8 @@
 import prisma from "../lib/prisma";
+import bcrypt from "bcrypt";
 import { hashPassword } from "../utils/hash";
 import { registerSchema } from "../validators/auth.validator";
+import { signToken } from "src/lib/jwt";
 
 export const registerUserService = async (data: unknown) => {
   const parsed = registerSchema.safeParse(data);
@@ -29,4 +31,23 @@ export const registerUserService = async (data: unknown) => {
   });
 
   return user;
+};
+
+export const loginService = async (email: string, password: string) => {
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (!user) throw new Error("User not found");
+
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) throw new Error("Invalid credentials");
+
+  const token = signToken({ userId: user.id, email: user.email });
+
+  return {
+    user: {
+      id: user.id,
+      email: user.email,
+      role: user.role,
+    },
+    token,
+  };
 };
