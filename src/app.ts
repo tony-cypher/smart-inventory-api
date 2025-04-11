@@ -2,12 +2,13 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import swaggerUi from "swagger-ui-express";
+import swaggerJSDoc from "swagger-jsdoc";
+import options from "./docs/swagger.config";
 import cookieParser from "cookie-parser";
 import { errorHandler } from "./middlewares/error.middleware";
 import authRoutes from "./routes/auth.route";
 import usersRoutes from "./routes/user.route";
 import storesRoutes from "./routes/store.route";
-import { swaggerSpec } from "./lib/swagger";
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use("/api/stores", storesRoutes);
 
 app.use(errorHandler);
 
+const swaggerSpec = swaggerJSDoc(options);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 export default app;

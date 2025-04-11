@@ -7,6 +7,12 @@ import {
 } from "src/services/user.service";
 import { AuthenticationRequest } from "src/types/auth";
 
+/**
+ * @swagger
+ * tags:
+ *   name: Users
+ *   description: User management
+ */
 export const getAllUsers = async (
   req: AuthenticationRequest,
   res: Response
