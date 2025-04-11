@@ -62,6 +62,7 @@ export const getCurrentUserService = async (userId: string) => {
   return user;
 };
 
-export const logoutService = () => {
+export const logoutService = (email?: string) => {
+  console.log(`${email ?? "User"} logged out`);
   return { message: "Logged out successfully" };
 };

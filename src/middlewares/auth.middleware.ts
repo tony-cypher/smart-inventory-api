@@ -1,29 +1,35 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import prisma from "src/lib/prisma";
+import { AuthenticationRequest, JwtPayload } from "src/types/auth";
 
-const authenticate = (
-  req: Request,
+export const authenticate = async (
+  req: AuthenticationRequest,
   res: Response,
   next: NextFunction
-): void => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    res.status(401).json({ message: "Unauthorized" });
-    return;
-  }
-
-  const token = authHeader.split(" ")[1];
-
+): Promise<void> => {
   try {
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET as string
-    ) as jwt.JwtPayload & { userId: string };
-    req.user = decoded;
-    return next();
-  } catch (err) {
-    res.status(401).json({ message: "Invalid or expired token" });
+    const token = req.cookies?.jwt || req.headers.authorization?.split(" ")[1];
+
+    if (!token) {
+      return next(new Error("Unauthorized: No Token Provided"));
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
+
+    const user = await prisma.user.findUnique({
+      where: { id: decoded.userId },
+      select: { id: true, email: true, role: true },
+    });
+
+    if (!user) {
+      return next(new Error("Unauthorized: User Not Found"));
+    }
+
+    req.user = user;
+    next();
+  } catch (error) {
+    console.error("Auth Middleware Error:", error);
+    next(new Error("Unauthorized: Invalid token"));
   }
 };
-
-export default authenticate;

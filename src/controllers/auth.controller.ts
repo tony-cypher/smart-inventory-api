@@ -5,6 +5,8 @@ import {
   logoutService,
   registerUserService,
 } from "../services/auth.service";
+import jwt from "jsonwebtoken";
+import { AuthenticationRequest, JwtPayload } from "src/types/auth";
 
 export const registerUser = async (
   req: Request,
@@ -26,27 +28,37 @@ export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
   try {
     const { user, token } = await loginService(email, password);
-    res.status(200).json({
-      message: "Login successful",
-      token,
-      user,
+
+    // set cookie
+    res.cookie("jwt", token, {
+      httpOnly: true,
+      sameSite: "strict",
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 24 * 60 * 60 * 1000,
     });
+
+    res.status(200).json({ user });
   } catch (error: any) {
     res.status(400).json({ message: error.message });
   }
 };
 
-// export const getMe = async (req: Request, res: Response) => {
-//   try {
-//     const userId = req.user.userId;
-//     const user = await getCurrentUserService(userId);
-//     res.status(200).json({ user });
-//   } catch (error: any) {
-//     res.status(404).json({ message: error.message });
-//   }
-// };
+export const getMe = async (req: AuthenticationRequest, res: Response) => {
+  try {
+    const userId = req.user?.id;
+    const user = await getCurrentUserService(userId!);
+    res.status(200).json({ user });
+  } catch (error: any) {
+    res.status(404).json({ message: error.message });
+  }
+};
 
-export const logout = (_req: Request, res: Response) => {
-  const result = logoutService();
+export const logout = (req: AuthenticationRequest, res: Response) => {
+  res.clearCookie("jwt", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+  });
+  const result = logoutService(req.user?.email);
   res.status(200).json(result);
 };
