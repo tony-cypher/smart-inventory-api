@@ -5,6 +5,7 @@ import swaggerUi from "swagger-ui-express";
 import cookieParser from "cookie-parser";
 import { errorHandler } from "./middlewares/error.middleware";
 import authRoutes from "./routes/auth.routes";
+import usersRoutes from "./routes/user.routes";
 import { swaggerSpec } from "./lib/swagger";
 
 const app = express();
@@ -22,6 +23,7 @@ app.get("/api/test", (req, res) => {
 
 // Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/users", usersRoutes);
 
 app.use(errorHandler);
 

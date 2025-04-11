@@ -1,5 +1,10 @@
-// import { Router } from "express";
+import { Router } from "express";
+import { getAllUsers, getSingleUser } from "src/controllers/user.controller";
+import { authenticate } from "src/middlewares/auth.middleware";
 
-// const router = Router()
+const router = Router();
 
-// router.get('/', getAllUsers)
+router.get("/", authenticate, getAllUsers);
+router.get("/:id", authenticate, getSingleUser);
+
+export default router;
