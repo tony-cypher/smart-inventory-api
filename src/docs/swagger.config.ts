@@ -1,3 +1,8 @@
+const serverUrl =
+  process.env.NODE_ENV === "production"
+    ? "https://smart-inventory-api-kbg9.onrender.com/api"
+    : "http://localhost:5000/api";
+
 const options = {
   definition: {
     openapi: "3.0.0",
@@ -8,8 +13,11 @@ const options = {
     },
     servers: [
       {
-        url: "http://localhost:5000/api",
-        description: "Local server",
+        url: serverUrl,
+        description:
+          process.env.NODE_ENV === "production"
+            ? "Production server"
+            : "Local server",
       },
     ],
     components: {
