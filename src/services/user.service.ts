@@ -1,3 +1,4 @@
+import { User } from "@prisma/client";
 import prisma from "src/lib/prisma";
 
 export const getAllUsersService = async () => {
@@ -23,4 +24,27 @@ export const getUserByIdService = async (id: string) => {
       createdAt: true,
     },
   });
+};
+
+export const updateUserService = async (id: string, data: Partial<User>) => {
+  const user = await prisma.user.update({
+    where: { id },
+    data,
+  });
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+  return user;
+};
+
+export const deleteUserService = async (id: string) => {
+  const user = await prisma.user.delete({
+    where: { id },
+  });
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+  return user;
 };

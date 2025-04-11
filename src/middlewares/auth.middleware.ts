@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import prisma from "src/lib/prisma";
 import { AuthenticationRequest, JwtPayload } from "src/types/auth";
 
-export const authenticate = async (
+export const isAuthenticated = async (
   req: AuthenticationRequest,
   res: Response,
   next: NextFunction
