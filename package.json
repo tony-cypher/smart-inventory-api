@@ -7,7 +7,7 @@
     "dev": "nodemon --watch src --ext ts --exec ts-node -r tsconfig-paths/register src/server.ts",
     "start": "node dist/server.js",
     "clean": "rimraf dist",
-    "build": "tsc",
+    "build": "npm ci && tsc",
     "deploy": "npm run clean && npm run build && npm run start"
   },
   "keywords": [],
