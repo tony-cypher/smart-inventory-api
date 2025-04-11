@@ -1,13 +1,13 @@
-import { Router } from "express";
 import {
   createStore,
   deleteStore,
   getAllStores,
   getStoreById,
   updateStore,
-} from "src/controllers/store.controller";
-import { isAdmin } from "src/middlewares/admin.middleware";
-import { isAuthenticated } from "src/middlewares/auth.middleware";
+} from "@controllers/store.controller";
+import { isAdmin } from "@middlewares/admin.middleware";
+import { isAuthenticated } from "@middlewares/auth.middleware";
+import { Router } from "express";
 
 const router = Router();
 

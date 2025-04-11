@@ -5,8 +5,7 @@ import {
   logoutService,
   registerUserService,
 } from "../services/auth.service";
-import jwt from "jsonwebtoken";
-import { AuthenticationRequest, JwtPayload } from "src/types/auth";
+import { AuthenticationRequest } from "src/types/auth";
 
 export const registerUser = async (
   req: Request,

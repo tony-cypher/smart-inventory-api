@@ -1,11 +1,12 @@
-import { Request, Response } from "express";
 import {
   createStoreService,
   deleteStoreService,
   getAllStoresService,
   getStoreByIdService,
   updateStoreService,
-} from "src/services/store.service";
+} from "@services/store.service";
+import { Request, Response } from "express";
+
 import { AuthenticationRequest } from "src/types/auth";
 
 export const getAllStores = async (_req: Request, res: Response) => {

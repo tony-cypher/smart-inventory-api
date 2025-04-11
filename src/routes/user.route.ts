@@ -1,12 +1,12 @@
-import { Router } from "express";
 import {
   deleteUser,
   getAllUsers,
   getSingleUser,
   updateUser,
-} from "src/controllers/user.controller";
-import { isAdmin } from "src/middlewares/admin.middleware";
-import { isAuthenticated } from "src/middlewares/auth.middleware";
+} from "@controllers/user.controller";
+import { isAdmin } from "@middlewares/admin.middleware";
+import { isAuthenticated } from "@middlewares/auth.middleware";
+import { Router } from "express";
 
 const router = Router();
 

@@ -1,8 +1,8 @@
-import prisma from "../lib/prisma";
 import bcrypt from "bcrypt";
-import { hashPassword } from "../utils/hash";
-import { registerSchema } from "../validators/auth.validator";
-import { signToken } from "src/lib/jwt";
+import prisma from "@lib/prisma";
+import { hashPassword } from "@utils/hash";
+import { signToken } from "@lib/jwt";
+import { registerSchema } from "@validators/auth.validator";
 
 export const registerUserService = async (data: unknown) => {
   const parsed = registerSchema.safeParse(data);

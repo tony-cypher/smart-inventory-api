@@ -9,7 +9,17 @@
     "baseUrl": "./",
     "outDir": "dist",
     "forceConsistentCasingInFileNames": true,
-    "typeRoots": ["./node_modules/@types", "./src/types"]
+    "typeRoots": ["./node_modules/@types", "./src/types"],
+    "paths": {
+      "@lib/*": ["src/lib/*"],
+      "@services/*": ["src/services/*"],
+      "@controllers/*": ["src/controllers/*"],
+      "@routes/*": ["src/routes/*"],
+      "@middlewares/*": ["src/middlewares/*"],
+      "@utils/*": ["src/utils/*"],
+      "@validators/*": ["src/validators/*"],
+      "@docs/*": ["src/docs/*"]
+    }
   },
   "include": ["src"],
   "exclude": ["node_modules"]

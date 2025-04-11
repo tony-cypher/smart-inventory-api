@@ -1,5 +1,4 @@
-import prisma from "src/lib/prisma";
-import { string } from "zod";
+import prisma from "@lib/prisma";
 
 export const getAllStoresService = async () => {
   return await prisma.store.findMany({

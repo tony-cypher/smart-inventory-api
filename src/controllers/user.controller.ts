@@ -1,10 +1,11 @@
-import { Request, Response } from "express";
 import {
   deleteUserService,
   getAllUsersService,
   getUserByIdService,
   updateUserService,
-} from "src/services/user.service";
+} from "@services/user.service";
+import { Request, Response } from "express";
+
 import { AuthenticationRequest } from "src/types/auth";
 
 /**
